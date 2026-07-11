@@ -209,3 +209,31 @@ See `AGENTS.md` and `SKILL.md` in this repo for guidance aimed at AI coding agen
 ## License
 
 MIT
+
+## Security and AI-agent checklist
+
+Keep `MARKPDF_API_KEY` in an environment variable or secret manager. Validate file size/type before conversion, authenticate upload endpoints, apply per-user quotas and timeouts, and redact signed URL query strings and document data from logs. Use short-lived HTTPS URLs for remote inputs.
+
+Converted Markdown is untrusted. Escape it before HTML rendering; for RAG and agents, delimit it as data and explicitly prevent document instructions from overriding system/developer policy or authorizing tool calls. Retry only `429`, transient network failures and selected `5xx` responses with bounded exponential backoff and jitter.
+
+Read [`AGENTS.md`](./AGENTS.md), [`SKILL.md`](./SKILL.md), and [`SECURITY.md`](./SECURITY.md) before generating production integration code.
+
+## S3/R2 uploads, downloads and database optimization
+
+For production workloads, upload large files directly from the client to a private S3 or Cloudflare R2 bucket with a short-lived presigned `PUT` URL. Then call this SDK's URL-conversion method so the application server never buffers the full document. Large Markdown results can be written straight back to object storage with the SDK's output URL option where supported.
+
+Recommended flow:
+
+1. Authenticate and authorize the user.
+2. Create a database row with a server-generated conversion ID and `uploading` status.
+3. Generate a random tenant-scoped object key and a short-lived presigned upload URL.
+4. Upload directly to private storage and verify object size/checksum server-side.
+5. Reuse a completed conversion only when tenant, input SHA-256 and canonical options hash all match.
+6. Convert from a signed input URL; use a signed output URL for large results.
+7. Store status and object metadata in the database, while keeping large Markdown bodies in S3/R2.
+8. Authorize downloads and return a short-lived signed `GET` URL or a hardened attachment response.
+9. Expire temporary objects, abandoned multipart uploads and stale database rows automatically.
+
+Do not use filenames, object URLs or multipart ETags as content identity. Use a verified checksum, normalize every output-affecting conversion option into the cache key, and isolate deduplication by tenant. Keep database indexes focused on tenant history, active jobs and expiry cleanup.
+
+See [`STORAGE.md`](./STORAGE.md) for the full SQL model, partial indexes, idempotent state transitions, cache-key rules, S3/R2 permissions, CORS, multipart uploads, lifecycle policies, secure download headers and AI/RAG protections.
