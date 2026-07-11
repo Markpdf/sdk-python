@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "markpdf"
+name = "markpdf-py"
 version = "0.1.0"
 description = "Official Python SDK for the markpdf (Flash PDF to Markdown) API"
 readme = "README.md"
@@ -31,7 +31,7 @@ dev = ["pytest>=7.0", "pytest-asyncio>=0.21", "respx>=0.20"]
 [project.urls]
 Homepage = "https://markpdf.tech"
 Documentation = "https://docs.markpdf.tech"
-Repository = "https://github.com/markpdf/markpdf-python"
+Repository = "https://github.com/Markpdf/sdk-python"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/markpdf"]

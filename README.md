@@ -6,7 +6,7 @@ markpdf is an HTTP conversion service built for speed: a `fast` mode tuned for A
 
 - **Website:** https://markpdf.tech
 - **Full API docs:** https://docs.markpdf.tech
-- **PyPI:** `pip install markpdf`
+- **PyPI:** `pip install markpdf-py`
 
 ## Table of contents
 
@@ -25,7 +25,7 @@ markpdf is an HTTP conversion service built for speed: a `fast` mode tuned for A
 ## Install
 
 ```bash
-pip install markpdf
+pip install markpdf-py
 ```
 
 Requires Python 3.9+.
